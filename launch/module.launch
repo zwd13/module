@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+	<node name="joy_node" pkg="joy" type="joy_node" ></node>
+	<node name="teleop_joy" pkg="module" type="teleop_joy" ></node>
+	<node name="motor" pkg="module" type="motor" ></node>
+        <node name="pwm_out" pkg="module" type="pwm_out" ></node>
+</launch>
