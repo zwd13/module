@@ -3,23 +3,20 @@
 
 import rospy
 import Adafruit_BBIO.PWM as PWM
-from std_msgs.msg import Float32
+from std_msgs.msg import Int32MultiArray
 
-leftPIN = "P8_19"
-rightPIN = "P9_16"
+leftPIN = "P9_21"
+rightPIN = "P9_22"
 
-def callback_left(data):
-  left = data.data
+def callback(data):
+  left = data.data[0]
+  right = data.data[1]
   PWM.set_duty_cycle(leftPIN, left)
-
-def callback_right(data):
-  right = data.data
   PWM.set_duty_cycle(rightPIN, right)
 
 def listener():
   rospy.init_node('pwm_out')
-  rospy.Subscriber("pwm_left", Float32, callback_left)
-  rospy.Subscriber("pwm_right", Float32, callback_right)
+  rospy.Subscriber("pwm", Int32MultiArray, callback)
   rospy.spin()
 
 if __name__ == '__main__':

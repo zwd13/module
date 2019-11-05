@@ -3,13 +3,14 @@
 #include <std_msgs/Int32MultiArray.h>
 #include <iostream>
 #include <cmath>
+#include "GPIO.h"
 
 using namespace std;
 
 float pi = 3.1415;
 float L = 0.171; //distance between wheels
-int LeftDir = 0;
-int rightDir = 0;
+int leftDIR = P9_17;
+int rightDIR = P9_18;
 
 class Motor{
   public:
@@ -46,28 +47,39 @@ void Motor::MotorControl(const geometry_msgs::Twist& twist)
 
   if(left_wheel_data >= 0)
   {
-    cout<<"Left Forward:"<<left_wheel_data;
+    gpio_set_value(leftDIR, LOW);
   }
   else
   {
-    cout<<"Left Back:"<<left_wheel_data;
+    gpio_set_value(leftDIR, HIGH);
   }
   if(right_wheel_data >= 0)
   {
-    cout<<"Right Forward:"<<right_wheel_data;
+    gpio_set_value(rightDIR, HIGH);
   }
   else
   {
-    cout<<"Right Back:"<<right_wheel_data;
+    gpio_set_value(rightDIR, LOW);
   }
-  cout<<endl;
 }
 
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "motor");
+
+  gpio_export(leftDIR);
+  gpio_set_dir(leftDIR, OUTPUT_PIN);
+  gpio_set_value(leftDIR, LOW);
+
+  gpio_export(rightDIR);
+  gpio_set_dir(rightDIR, OUTPUT_PIN);
+  gpio_set_value(rightDIR, HIGH);
+
   ros::NodeHandle n;
   Motor startMotor(n);
   ros::spin();
+
+  gpio_set_value(leftDIR, LOW);
+  gpio_set_value(rightDIR, HIGH);
   return 0;
 }
